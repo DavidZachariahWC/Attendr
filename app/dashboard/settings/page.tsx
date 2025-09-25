@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { supabase } from "@/lib/supabase";
@@ -71,7 +72,7 @@ export default function SettingsPage() {
     // 2. For each course, fetch enrolled students
     const coursesWithStudents = await Promise.all(
       courseData.map(async (course) => {
-        const { data: enrollments, error: enrollmentError } = await supabase
+        const { data: enrollments, error: _enrollmentError } = await supabase
           .from("enrollments")
           .select("users(id, name)") // Join with users table
           .eq("course_id", course.id);

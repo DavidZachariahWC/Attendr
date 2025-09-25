@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -10,59 +11,81 @@ const DEMO_USERS = [
   { name: "Lan", id: "00000000-0000-0000-0000-000000000004" },
 ];
 
-const DEMO_COURSE = {
-  id: "00000000-0000-0000-0000-00000000003C",
-  name: "Interview Demo",
-  // This is now dynamic, so we remove the hardcoded location
-};
+interface Course {
+  id: string;
+  name: string;
+  location: string;
+  start_time: string;
+  end_time: string;
+}
 
 export default function StudentPage() {
   const [selectedStudent, setSelectedStudent] = useState<{
     name: string;
     id: string;
   } | null>(null);
+  const [enrolledCourses, setEnrolledCourses] = useState<Course[]>([]);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [location, setLocation] = useState("");
   const [error, setError] = useState("");
   const [isCheckedIn, setIsCheckedIn] = useState(false);
-  const [courseDetails, setCourseDetails] = useState({
-    location: "",
-    startTime: null,
-    endTime: null,
-  });
+  const [loadingCourses, setLoadingCourses] = useState(false);
 
   useEffect(() => {
-    // Fetch the course location when a student is selected
-    const fetchCourseDetails = async () => {
+    const fetchEnrolledCourses = async () => {
       if (!selectedStudent) return;
 
-      const { data, error } = await supabase
-        .from("courses")
-        .select("location, start_time, end_time")
-        .eq("id", DEMO_COURSE.id)
-        .single();
+      setLoadingCourses(true);
+      setError("");
 
-      if (data) {
-        setCourseDetails({
-          location: data.location,
-          startTime: data.start_time,
-          endTime: data.end_time,
-        });
+      const { data: enrollments, error: enrollmentsError } = await supabase
+        .from("enrollments")
+        .select("course_id")
+        .eq("student_id", selectedStudent.id);
+
+      if (enrollmentsError) {
+        setError("Could not fetch your courses. Please try again.");
+        console.error(enrollmentsError);
+        setLoadingCourses(false);
+        return;
       }
+
+      if (!enrollments || enrollments.length === 0) {
+        setEnrolledCourses([]);
+        setLoadingCourses(false);
+        return;
+      }
+
+      const courseIds = enrollments.map((e) => e.course_id);
+
+      const { data: courses, error: coursesError } = await supabase
+        .from("courses")
+        .select("id, name, location, start_time, end_time")
+        .in("id", courseIds);
+
+      if (coursesError) {
+        setError("Could not fetch your course details. Please try again.");
+        console.error(coursesError);
+      } else {
+        setEnrolledCourses(courses || []);
+      }
+      setLoadingCourses(false);
     };
 
-    fetchCourseDetails();
+    fetchEnrolledCourses();
   }, [selectedStudent]);
 
   const handleCheckIn = async () => {
+    if (!selectedCourse) return;
     setError("");
 
     // Time validation
     const now = new Date();
-    const startTime = courseDetails.startTime
-      ? new Date(courseDetails.startTime)
+    const startTime = selectedCourse.start_time
+      ? new Date(selectedCourse.start_time)
       : null;
-    const endTime = courseDetails.endTime
-      ? new Date(courseDetails.endTime)
+    const endTime = selectedCourse.end_time
+      ? new Date(selectedCourse.end_time)
       : null;
 
     if (!startTime || !endTime || now < startTime || now > endTime) {
@@ -70,7 +93,7 @@ export default function StudentPage() {
       return;
     }
 
-    if (location.toLowerCase() !== courseDetails.location.toLowerCase()) {
+    if (location.toLowerCase() !== selectedCourse.location.toLowerCase()) {
       setError("You must be in the classroom to check in.");
       return;
     }
@@ -86,7 +109,7 @@ export default function StudentPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             studentId: selectedStudent.id,
-            courseId: DEMO_COURSE.id,
+            courseId: selectedCourse.id,
           }),
         });
 
@@ -96,12 +119,13 @@ export default function StudentPage() {
           const errorData = await response.json();
           setError(errorData.error || "Failed to check in. Please try again.");
         }
-      } catch (err) {
+      } catch (_err) {
         setError("An error occurred. Please try again.");
       }
     }
   };
 
+  // Step 1: Profile Selection
   if (!selectedStudent) {
     return (
       <div>
@@ -124,17 +148,58 @@ export default function StudentPage() {
     );
   }
 
+  // Step 2: Course Selection
+  if (!selectedCourse) {
+    return (
+      <div>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">
+            Welcome, {selectedStudent.name}
+          </h2>
+          <Button variant="link" onClick={() => setSelectedStudent(null)}>
+            Switch Profile
+          </Button>
+        </div>
+        <h3 className="text-lg font-medium mb-2">Select a Class to Check In</h3>
+        {loadingCourses ? (
+          <p>Loading your courses...</p>
+        ) : error ? (
+          <p className="text-red-600">{error}</p>
+        ) : enrolledCourses.length > 0 ? (
+          <div className="space-y-2">
+            {enrolledCourses.map((course) => (
+              <Button
+                key={course.id}
+                variant="outline"
+                className="w-full justify-start h-12 text-left"
+                onClick={() => setSelectedCourse(course)}
+              >
+                {course.name}
+              </Button>
+            ))}
+          </div>
+        ) : (
+          <p>You are not enrolled in any courses.</p>
+        )}
+      </div>
+    );
+  }
+
+  // Step 3: Check-in
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">
-          Welcome, {selectedStudent.name}
+          Check-in for {selectedCourse.name}
         </h2>
+        <Button variant="link" onClick={() => setSelectedCourse(null)}>
+          Back to Courses
+        </Button>
       </div>
 
       <div className="p-4 border rounded-lg bg-white shadow-sm">
         <div className="flex justify-between items-center">
-          <h3 className="font-medium text-lg">{DEMO_COURSE.name}</h3>
+          <h3 className="font-medium text-lg">{selectedCourse.name}</h3>
           {isCheckedIn && (
             <span className="px-3 py-1 text-sm rounded-full bg-green-100 text-green-800 font-medium">
               Checked In
@@ -155,7 +220,7 @@ export default function StudentPage() {
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             className="w-full p-2 border rounded-md"
-            placeholder={`e.g., ${courseDetails.location || "Classroom..."}`}
+            placeholder={`e.g., ${selectedCourse.location || "Classroom..."}`}
             disabled={isCheckedIn}
           />
           {error && <p className="text-sm text-red-600 mt-2">{error}</p>}

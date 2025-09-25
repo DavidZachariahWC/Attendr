@@ -4,8 +4,8 @@ import { ThemeProvider } from "../components/provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "My School Project",
-  description: "A simple web app for my school project.",
+  title: "Attendr",
+  description: "Attendr.",
 };
 
 export default function RootLayout({

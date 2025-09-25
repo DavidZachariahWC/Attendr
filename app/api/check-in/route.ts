@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 
@@ -7,7 +8,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
-export async function OPTIONS(request: Request) {
+export async function OPTIONS(_request: Request) {
   return new NextResponse(null, {
     status: 204,
     headers: corsHeaders,

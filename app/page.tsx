@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Check, ArrowRight } from "lucide-react";
+import { Check } from "lucide-react";
 import { useEffect } from "react";
 
 export default function HomePage() {
@@ -70,7 +70,7 @@ export default function HomePage() {
           <div className="mt-8 flex justify-center">
             <Link href="/sign-in">
               <Button size="lg" variant="outline">
-                Professor Login
+                Login
               </Button>
             </Link>
           </div>
@@ -99,7 +99,7 @@ export default function HomePage() {
                 <h3 className="mt-5 text-lg font-medium">Secure & Reliable</h3>
                 <p className="mt-2 text-base text-gray-500">
                   Location verification and passkey prompts prevent students
-                  from checking in when they're not in class.
+                  from checking in when they are not in class.
                 </p>
               </div>
               <div className="text-center">
@@ -109,7 +109,7 @@ export default function HomePage() {
                 <h3 className="mt-5 text-lg font-medium">Seamless Exports</h3>
                 <p className="mt-2 text-base text-gray-500">
                   Export attendance data to CSV for easy integration with your
-                  school's grading system.
+                  school&apos;s grading system.
                 </p>
               </div>
             </div>

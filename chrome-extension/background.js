@@ -4,8 +4,8 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 // Initialize Supabase client
 // NOTE: In a real extension, you'd protect these keys, but for a local demo this is fine.
-const supabaseUrl = "YOUR_SUPABASE_URL"; // IMPORTANT: Replace with your Supabase URL
-const supabaseAnonKey = "YOUR_SUPABASE_ANON_KEY"; // IMPORTANT: Replace with your Supabase Anon Key
+const supabaseUrl = "https://rkxlolljbysxejpxtizu.supabase.co"; // IMPORTANT: Replace with your Supabase URL
+const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJreGxvbGxqYnlzeGVqcHh0aXp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3NTg0MDksImV4cCI6MjA3NDMzNDQwOX0.I3DqWoqh7dblCf7y2wJTfbf0DSJoUKmZi76lITIFg9o"; // IMPORTANT: Replace with your Supabase Anon Key
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 console.log("Attendr Background Script Loaded.");
@@ -29,11 +29,20 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name === "check-schedule-alarm") {
     console.log("Alarm triggered: Checking schedule...");
     const schedule = await getScheduleFromAPI(MOCK_STUDENT_ID);
+    console.log("Fetched schedule:", schedule);
     const now = new Date();
+
+    if (!schedule || schedule.length === 0) {
+      console.log("No schedule found for student.");
+      return;
+    }
 
     for (const course of schedule) {
       const isDue = isCourseTime(course, now);
       const hasBeenCheckedIn = await hasCheckedInToday(course.id);
+      console.log(
+        `Checking course: ${course.name}. Is due? ${isDue}. Has been checked in? ${hasBeenCheckedIn}`,
+      );
 
       if (isDue && !hasBeenCheckedIn) {
         console.log(`Course ${course.id} is due. Starting check-in process.`);
@@ -62,20 +71,39 @@ async function getScheduleFromAPI(studentId) {
     // For this demo, we will simulate this by fetching all course data for the mock student's enrollments.
     // This is NOT efficient, but demonstrates the principle.
 
+    console.log(`Fetching schedule for student ID: ${studentId}`);
     // This part would be a single API call in a real app.
     // 1. Get student enrollments
-    const { data: enrollments } = await supabase
+    const { data: enrollments, error: enrollmentsError } = await supabase
       .from("enrollments")
       .select("course_id")
       .eq("student_id", studentId);
-    if (!enrollments) return [];
+
+    if (enrollmentsError) {
+      console.error("Error fetching enrollments:", enrollmentsError);
+      return [];
+    }
+    console.log("Fetched enrollments:", enrollments);
+
+    if (!enrollments || enrollments.length === 0) {
+      console.log("No enrollments found for this student.");
+      return [];
+    }
 
     const courseIds = enrollments.map((e) => e.course_id);
+    console.log("Extracted course IDs:", courseIds);
+
     // 2. Get course details
-    const { data: courses } = await supabase
+    const { data: courses, error: coursesError } = await supabase
       .from("courses")
       .select("*")
       .in("id", courseIds);
+
+    if (coursesError) {
+      console.error("Error fetching course details:", coursesError);
+      return [];
+    }
+    console.log("Fetched course details:", courses);
 
     return courses || [];
   } catch (error) {
@@ -89,15 +117,15 @@ async function getScheduleFromAPI(studentId) {
 async function initiateCheckIn(course) {
   // Open confirmation window with all necessary details
   const url = new URL(chrome.runtime.getURL("confirmation.html"));
-  url.searchParams.append("courseId", course.courseId);
-  url.searchParams.append("courseName", course.courseName);
+  url.searchParams.append("courseId", course.id);
+  url.searchParams.append("courseName", course.name);
   url.searchParams.append("location", course.location);
 
   chrome.windows.create({
     url: url.href,
     type: "popup",
-    width: 360,
-    height: 250, // Increased height for the input field
+    width: 400,
+    height: 420,
   });
 }
 

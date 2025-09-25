@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
+import { RefreshCw } from "lucide-react";
 
 // Define interfaces for our data structure
 interface Student {
@@ -23,6 +25,48 @@ const MOCK_PROFESSOR_ID = "00000000-0000-0000-0000-00000000000A";
 export default function ProfessorView() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshingCourseId, setRefreshingCourseId] = useState<string | null>(
+    null,
+  );
+
+  const fetchCourseStudents = async (courseId: string) => {
+    // Fetch students enrolled in the course
+    const { data: enrollmentData, error: enrollmentError } = await supabase
+      .from("enrollments")
+      .select("student_id")
+      .eq("course_id", courseId);
+
+    if (enrollmentError) {
+      console.error("Error fetching enrollments:", enrollmentError);
+      return [];
+    }
+
+    const studentIds = enrollmentData.map((e) => e.student_id);
+
+    // Fetch student details and their attendance for this specific course
+    const studentsWithAttendance = await Promise.all(
+      studentIds.map(async (studentId) => {
+        const { data: studentData, error: _studentError } = await supabase
+          .from("users")
+          .select("id, name")
+          .eq("id", studentId)
+          .single();
+
+        const { data: attendanceData, error: _attendanceError } = await supabase
+          .from("attendance_logs")
+          .select("is_present")
+          .eq("student_id", studentId)
+          .eq("course_id", courseId);
+
+        return {
+          id: studentData?.id || studentId,
+          name: studentData?.name || "Unknown Student",
+          attendance: attendanceData || [],
+        };
+      }),
+    );
+    return studentsWithAttendance;
+  };
 
   useEffect(() => {
     const fetchProfessorData = async () => {
@@ -43,45 +87,8 @@ export default function ProfessorView() {
       // 2. For each course, fetch enrolled students and their attendance
       const coursesWithDetails = await Promise.all(
         courseData.map(async (course) => {
-          // Fetch students enrolled in the course
-          const { data: enrollmentData, error: enrollmentError } =
-            await supabase
-              .from("enrollments")
-              .select("student_id")
-              .eq("course_id", course.id);
-
-          if (enrollmentError) {
-            console.error("Error fetching enrollments:", enrollmentError);
-            return { ...course, students: [] };
-          }
-
-          const studentIds = enrollmentData.map((e) => e.student_id);
-
-          // Fetch student details and their attendance for this specific course
-          const studentsWithAttendance = await Promise.all(
-            studentIds.map(async (studentId) => {
-              const { data: studentData, error: studentError } = await supabase
-                .from("users")
-                .select("id, name")
-                .eq("id", studentId)
-                .single();
-
-              const { data: attendanceData, error: attendanceError } =
-                await supabase
-                  .from("attendance_logs")
-                  .select("is_present")
-                  .eq("student_id", studentId)
-                  .eq("course_id", course.id);
-
-              return {
-                id: studentData?.id || studentId,
-                name: studentData?.name || "Unknown Student",
-                attendance: attendanceData || [],
-              };
-            }),
-          );
-
-          return { ...course, students: studentsWithAttendance };
+          const students = await fetchCourseStudents(course.id);
+          return { ...course, students };
         }),
       );
 
@@ -91,6 +98,19 @@ export default function ProfessorView() {
 
     fetchProfessorData();
   }, []);
+
+  const handleRefreshCourse = async (courseId: string) => {
+    setRefreshingCourseId(courseId);
+    const updatedStudents = await fetchCourseStudents(courseId);
+    setCourses((prevCourses) =>
+      prevCourses.map((course) =>
+        course.id === courseId
+          ? { ...course, students: updatedStudents }
+          : course,
+      ),
+    );
+    setRefreshingCourseId(null);
+  };
 
   const calculateAttendanceRate = (attendance: { is_present: boolean }[]) => {
     if (!attendance || attendance.length === 0) return 0;
@@ -133,7 +153,22 @@ export default function ProfessorView() {
         {courses.map((course) => (
           <div key={course.id}>
             <div className="flex justify-between items-center mb-2">
-              <h3 className="text-lg font-medium">{course.name}</h3>
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-medium">{course.name}</h3>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => handleRefreshCourse(course.id)}
+                  disabled={refreshingCourseId === course.id}
+                  className="h-6 w-6"
+                >
+                  <RefreshCw
+                    className={`h-4 w-4 ${
+                      refreshingCourseId === course.id ? "animate-spin" : ""
+                    }`}
+                  />
+                </Button>
+              </div>
               <div className="flex gap-2">
                 <Button
                   variant="outline"
