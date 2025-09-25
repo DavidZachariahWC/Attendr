@@ -22,11 +22,6 @@ const navItems: NavItem[] = [
     href: "/dashboard/settings",
     icon: Settings,
   },
-  {
-    label: "Enrollments",
-    href: "/dashboard/enrollments",
-    icon: UserPlus,
-  },
 ];
 
 export default function DashboardSideBar() {
