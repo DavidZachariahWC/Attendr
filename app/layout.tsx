@@ -2,28 +2,10 @@ import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 import { ThemeProvider } from "../components/provider";
 import "./globals.css";
-import { Analytics } from "@vercel/analytics/next";
+
 export const metadata: Metadata = {
-  title: "Next.js Starter Kit - Launch Your SAAS",
-  description:
-    "A modern, full-stack Next.js starter kit with authentication, payments, and dashboard. Built with TypeScript, Tailwind CSS, and shadcn/ui.",
-  openGraph: {
-    title: "Next.js Starter Kit",
-    description:
-      "A modern, full-stack Next.js starter kit with authentication, payments, and dashboard. Built with TypeScript, Tailwind CSS, and shadcn/ui.",
-    url: "nextstarter.xyz",
-    siteName: "Next.js Starter Kit",
-    images: [
-      {
-        url: "https://jdj14ctwppwprnqu.public.blob.vercel-storage.com/nsk-w9fFwBBmLDLxrB896I4xqngTUEEovS.png",
-        width: 1200,
-        height: 630,
-        alt: "Next.js Starter Kit",
-      },
-    ],
-    locale: "en-US",
-    type: "website",
-  },
+  title: "My School Project",
+  description: "A simple web app for my school project.",
 };
 
 export default function RootLayout({
@@ -43,7 +25,6 @@ export default function RootLayout({
         >
           {children}
           <Toaster />
-          <Analytics />
         </ThemeProvider>
       </body>
     </html>

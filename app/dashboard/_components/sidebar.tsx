@@ -1,15 +1,7 @@
 "use client";
 
-import UserProfile from "@/components/user-profile";
 import clsx from "clsx";
-import {
-  Banknote,
-  HomeIcon,
-  LucideIcon,
-  MessageCircleIcon,
-  Settings,
-  Upload,
-} from "lucide-react";
+import { HomeIcon, LucideIcon, Settings, UserPlus } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -26,19 +18,14 @@ const navItems: NavItem[] = [
     icon: HomeIcon,
   },
   {
-    label: "Chat",
-    href: "/dashboard/chat",
-    icon: MessageCircleIcon,
+    label: "Class Settings",
+    href: "/dashboard/settings",
+    icon: Settings,
   },
   {
-    label: "Upload",
-    href: "/dashboard/upload",
-    icon: Upload,
-  },
-  {
-    label: "Payment Gated",
-    href: "/dashboard/payment",
-    icon: Banknote,
+    label: "Enrollments",
+    href: "/dashboard/enrollments",
+    icon: UserPlus,
   },
 ];
 
@@ -55,7 +42,7 @@ export default function DashboardSideBar() {
             className="flex items-center font-semibold hover:cursor-pointer"
             href="/"
           >
-            <span>Nextjs Starter Kit</span>
+            <span>Attendr</span>
           </Link>
         </div>
 
@@ -76,24 +63,6 @@ export default function DashboardSideBar() {
                 {item.label}
               </div>
             ))}
-          </div>
-
-          <div className="flex flex-col gap-2 w-full">
-            <div className="px-4">
-              <div
-                onClick={() => router.push("/dashboard/settings")}
-                className={clsx(
-                  "flex items-center w-full gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:cursor-pointer",
-                  pathname === "/dashboard/settings"
-                    ? "bg-primary/10 text-primary hover:bg-primary/20"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                )}
-              >
-                <Settings className="h-4 w-4" />
-                Settings
-              </div>
-            </div>
-            <UserProfile />
           </div>
         </nav>
       </div>
