@@ -123,11 +123,10 @@ export default function HomePage() {
                     <Check />
                   </div>
                   <h3 className="mt-5 text-lg font-medium">
-                    Seamless Exports
+                    Seamless Integration
                   </h3>
                   <p className="mt-2 text-base text-gray-500">
-                    Export attendance data to CSV for easy integration with your
-                    school&apos;s grading system.
+                    Easy integration with your school&apos;s grading system.
                   </p>
                 </div>
               </AnimatedSection>
@@ -173,8 +172,7 @@ export default function HomePage() {
                   Zero-Touch Check-in
                 </h3>
                 <p className="mt-2 text-base text-gray-500">
-                  The extension handles check-in automatically in the
-                  background. Students don&apos;t have to do a thing.
+                  No daily setup. No more fumbling to scan a code before it dissappears.
                 </p>
               </div>
             </AnimatedSection>
