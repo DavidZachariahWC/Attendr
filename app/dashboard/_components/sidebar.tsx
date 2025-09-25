@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { HomeIcon, LucideIcon, Settings, UserPlus } from "lucide-react";
+import { HomeIcon, LucideIcon, Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
