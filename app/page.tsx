@@ -60,9 +60,9 @@ export default function HomePage() {
       </header>
 
       <main className="flex-1">
-        <section className="hero-pattern text-center py-20 px-4 sm:px-6 lg:px-8">
+        <section className="hero-pattern text-center py-28 px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
-            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+            <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-white">
               Effortless Attendance Tracking is Here
             </h1>
           </AnimatedSection>
@@ -85,13 +85,13 @@ export default function HomePage() {
 
         <section className="py-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
-            <AnimatedSection>
+            <AnimatedSection delay={0.6}>
               <h2 className="text-3xl font-bold text-center">
                 Why Professors Love Attendr
               </h2>
             </AnimatedSection>
             <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-10">
-              <AnimatedSection delay={0.2}>
+              <AnimatedSection delay={0.8}>
                 <div className="text-center">
                   <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white mx-auto">
                     <Check />
@@ -103,7 +103,7 @@ export default function HomePage() {
                   </p>
                 </div>
               </AnimatedSection>
-              <AnimatedSection delay={0.4}>
+              <AnimatedSection delay={1.0}>
                 <div className="text-center">
                   <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white mx-auto">
                     <Check />
@@ -117,7 +117,7 @@ export default function HomePage() {
                   </p>
                 </div>
               </AnimatedSection>
-              <AnimatedSection delay={0.6}>
+              <AnimatedSection delay={1.2}>
                 <div className="text-center">
                   <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white mx-auto">
                     <Check />
