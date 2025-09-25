@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Check } from "lucide-react";
 import { useEffect } from "react";
+import AnimatedSection from "@/components/homepage/animated-section";
 
 export default function HomePage() {
   useEffect(() => {
@@ -59,77 +60,100 @@ export default function HomePage() {
       </header>
 
       <main className="flex-1">
-        <section className="text-center py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900">
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-            Effortless Attendance Tracking is Here
-          </h1>
-          <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-500 dark:text-gray-400">
-            Attendr automates attendance with secure, location-aware technology.
-            No more QR codes. No more wasted class time.
-          </p>
-          <div className="mt-8 flex justify-center">
-            <Link href="/sign-in">
-              <Button size="lg" variant="outline">
-                Login
-              </Button>
-            </Link>
-          </div>
+        <section className="hero-pattern text-center py-20 px-4 sm:px-6 lg:px-8">
+          <AnimatedSection>
+            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+              Effortless Attendance Tracking is Here
+            </h1>
+          </AnimatedSection>
+          <AnimatedSection delay={0.2}>
+            <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-500 dark:text-gray-400">
+              Attendr automates attendance with secure, location-aware technology.
+              No more QR codes. No more wasted class time.
+            </p>
+          </AnimatedSection>
+          <AnimatedSection delay={0.4}>
+            <div className="mt-8 flex justify-center">
+              <Link href="/sign-in">
+                <Button size="lg" variant="outline">
+                  Login
+                </Button>
+              </Link>
+            </div>
+          </AnimatedSection>
         </section>
 
         <section className="py-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center">
-              Why Professors Love Attendr
-            </h2>
+            <AnimatedSection>
+              <h2 className="text-3xl font-bold text-center">
+                Why Professors Love Attendr
+              </h2>
+            </AnimatedSection>
             <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-10">
-              <div className="text-center">
-                <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white mx-auto">
-                  <Check />
+              <AnimatedSection delay={0.2}>
+                <div className="text-center">
+                  <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white mx-auto">
+                    <Check />
+                  </div>
+                  <h3 className="mt-5 text-lg font-medium">One-Time Setup</h3>
+                  <p className="mt-2 text-base text-gray-500">
+                    Set up your courses once. Attendr handles the rest, every
+                    single class.
+                  </p>
                 </div>
-                <h3 className="mt-5 text-lg font-medium">One-Time Setup</h3>
-                <p className="mt-2 text-base text-gray-500">
-                  Set up your courses once. Attendr handles the rest, every
-                  single class.
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white mx-auto">
-                  <Check />
+              </AnimatedSection>
+              <AnimatedSection delay={0.4}>
+                <div className="text-center">
+                  <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white mx-auto">
+                    <Check />
+                  </div>
+                  <h3 className="mt-5 text-lg font-medium">
+                    Secure & Reliable
+                  </h3>
+                  <p className="mt-2 text-base text-gray-500">
+                    Location verification and passkey prompts prevent students
+                    from checking in when they are not in class.
+                  </p>
                 </div>
-                <h3 className="mt-5 text-lg font-medium">Secure & Reliable</h3>
-                <p className="mt-2 text-base text-gray-500">
-                  Location verification and passkey prompts prevent students
-                  from checking in when they are not in class.
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white mx-auto">
-                  <Check />
+              </AnimatedSection>
+              <AnimatedSection delay={0.6}>
+                <div className="text-center">
+                  <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white mx-auto">
+                    <Check />
+                  </div>
+                  <h3 className="mt-5 text-lg font-medium">
+                    Seamless Exports
+                  </h3>
+                  <p className="mt-2 text-base text-gray-500">
+                    Export attendance data to CSV for easy integration with your
+                    school&apos;s grading system.
+                  </p>
                 </div>
-                <h3 className="mt-5 text-lg font-medium">Seamless Exports</h3>
-                <p className="mt-2 text-base text-gray-500">
-                  Export attendance data to CSV for easy integration with your
-                  school&apos;s grading system.
-                </p>
-              </div>
+              </AnimatedSection>
             </div>
           </div>
         </section>
 
-        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900">
+        <section className="section-pattern py-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold">
-              A Seamless Experience for Students
-            </h2>
-            <p className="mt-4 text-lg text-gray-500">
-              With the Attendr Chrome extension, students can say goodbye to
-              classroom distractions. No more fumbling for phones or scanning QR
-              codes.
-            </p>
+            <AnimatedSection>
+              <h2 className="text-3xl font-bold">
+                A Seamless Experience for Students
+              </h2>
+            </AnimatedSection>
+            <AnimatedSection delay={0.2}>
+              <p className="mt-4 text-lg text-gray-500">
+                With the Attendr Chrome extension, students can say goodbye to
+                classroom distractions. No more fumbling for phones or scanning
+                QR codes.
+              </p>
+            </AnimatedSection>
             <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-10">
-              <div className="text-center">
-                <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white mx-auto">
-                  <svg
+              <AnimatedSection delay={0.4}>
+                <div className="text-center">
+                  <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white mx-auto">
+                    <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -153,9 +177,11 @@ export default function HomePage() {
                   background. Students don&apos;t have to do a thing.
                 </p>
               </div>
-              <div className="text-center">
-                <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white mx-auto">
-                  <svg
+            </AnimatedSection>
+              <AnimatedSection delay={0.6}>
+                <div className="text-center">
+                  <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white mx-auto">
+                    <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -171,15 +197,19 @@ export default function HomePage() {
                     <path d="M9 11l2 2 4-4" />
                   </svg>
                 </div>
-                <h3 className="mt-5 text-lg font-medium">Fewer Distractions</h3>
+                <h3 className="mt-5 text-lg font-medium">
+                  Fewer Distractions
+                </h3>
                 <p className="mt-2 text-base text-gray-500">
                   By keeping phones away, students can stay focused on the
                   lecture, not on scanning codes.
                 </p>
               </div>
-              <div className="text-center">
-                <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white mx-auto">
-                  <svg
+            </AnimatedSection>
+              <AnimatedSection delay={0.8}>
+                <div className="text-center">
+                  <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white mx-auto">
+                    <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -195,12 +225,15 @@ export default function HomePage() {
                     <path d="M9 11l2 2 4-4" />
                   </svg>
                 </div>
-                <h3 className="mt-5 text-lg font-medium">Secure and Private</h3>
+                <h3 className="mt-5 text-lg font-medium">
+                  Secure and Private
+                </h3>
                 <p className="mt-2 text-base text-gray-500">
-                  Our extension uses location verification and passkeys, keeping
-                  student data safe and secure.
+                  Our extension uses location verification and passkeys,
+                  keeping student data safe and secure.
                 </p>
               </div>
+            </AnimatedSection>
             </div>
           </div>
         </section>
