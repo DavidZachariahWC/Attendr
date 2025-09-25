@@ -5,7 +5,7 @@ import { HomeIcon, LucideIcon, Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
-interface NavItem {
+interface NavItem {//
   label: string;
   href: string;
   icon: LucideIcon;
