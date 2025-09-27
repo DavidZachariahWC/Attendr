@@ -5,11 +5,10 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 
-const DEMO_USERS = [
-  { name: "Will", id: "00000000-0000-0000-0000-000000000003" },
-  { name: "Julian", id: "00000000-0000-0000-0000-000000000002" },
-  { name: "Lan", id: "00000000-0000-0000-0000-000000000004" },
-];
+interface Student {
+  id: string;
+  name: string | null;
+}
 
 interface Course {
   id: string;
@@ -20,6 +19,8 @@ interface Course {
 }
 
 export default function StudentPage() {
+  const [students, setStudents] = useState<Student[]>([]);
+  const [loadingStudents, setLoadingStudents] = useState(true);
   const [selectedStudent, setSelectedStudent] = useState<{
     name: string;
     id: string;
@@ -30,6 +31,25 @@ export default function StudentPage() {
   const [error, setError] = useState("");
   const [isCheckedIn, setIsCheckedIn] = useState(false);
   const [loadingCourses, setLoadingCourses] = useState(false);
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      setLoadingStudents(true);
+      const { data, error } = await supabase
+        .from("users")
+        .select("id, name")
+        .eq("role", "student");
+
+      if (error) {
+        console.error("Error fetching students:", error);
+        setError("Could not fetch students. Please try again.");
+      } else if (data) {
+        setStudents(data);
+      }
+      setLoadingStudents(false);
+    };
+    fetchStudents();
+  }, []);
 
   useEffect(() => {
     const fetchEnrolledCourses = async () => {
@@ -74,6 +94,36 @@ export default function StudentPage() {
 
     fetchEnrolledCourses();
   }, [selectedStudent]);
+
+  useEffect(() => {
+    // Reset state when selection changes
+    setIsCheckedIn(false);
+    setError("");
+    setLocation("");
+
+    if (!selectedStudent || !selectedCourse) {
+      return;
+    }
+
+    const checkAttendanceStatus = async () => {
+      // Query attendance_logs table
+      const { data, error } = await supabase
+        .from("attendance_logs")
+        .select("id")
+        .eq("student_id", selectedStudent.id)
+        .eq("course_id", selectedCourse.id)
+        .limit(1);
+
+      if (error) {
+        console.error("Error checking attendance status:", error);
+        setError("Could not verify check-in status.");
+      } else if (data && data.length > 0) {
+        setIsCheckedIn(true);
+      }
+    };
+
+    checkAttendanceStatus();
+  }, [selectedStudent, selectedCourse]);
 
   const handleCheckIn = async () => {
     if (!selectedCourse) return;
@@ -132,18 +182,27 @@ export default function StudentPage() {
         <h2 className="text-xl font-semibold mb-4 text-center">
           Select Your Profile
         </h2>
-        <div className="grid grid-cols-3 gap-4">
-          {DEMO_USERS.map((user) => (
-            <Button
-              key={user.id}
-              variant="outline"
-              className="h-24 text-lg"
-              onClick={() => setSelectedStudent(user)}
-            >
-              {user.name}
-            </Button>
-          ))}
-        </div>
+        {loadingStudents ? (
+          <p>Loading students...</p>
+        ) : (
+          <div className="flex flex-wrap justify-center gap-4">
+            {students.map((user) => (
+              <Button
+                key={user.id}
+                variant="outline"
+                className="h-24 min-w-32 text-lg px-6"
+                onClick={() =>
+                  setSelectedStudent({
+                    id: user.id,
+                    name: user.name || "Unnamed Student",
+                  })
+                }
+              >
+                {user.name}
+              </Button>
+            ))}
+          </div>
+        )}
       </div>
     );
   }
